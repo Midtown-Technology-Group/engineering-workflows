@@ -9,10 +9,15 @@ Call `.github/workflows/sonar.yml` at an immutable reviewed commit after your
 existing tests. Supply project-key, organization, the exact-run coverage artifact
 name (when available), and an explicitly selected `SONAR_TOKEN` secret. Never use
 `secrets: inherit`. Caller coverage downloads to `.sonar-coverage/`; configure
-repo-owned `sonar-project.properties` to reference those paths.
+repo-owned `sonar-project.properties` to reference those paths. Coverage must be
+produced from the same commit as the scanner: set the coverage checkout ref to
+`${{ github.event.pull_request.head.sha || github.sha }}`. Existing integration
+tests can continue testing GitHub's merge candidate separately.
 
 ```yaml
 sonar:
+  permissions:
+    contents: read
   needs: coverage
   if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
   uses: Midtown-Technology-Group/engineering-workflows/.github/workflows/sonar.yml@REVIEWED_COMMIT_SHA
