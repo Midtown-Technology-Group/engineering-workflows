@@ -19,7 +19,7 @@ sonar:
   permissions:
     contents: read
   needs: coverage
-  if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+  if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
   uses: Midtown-Technology-Group/engineering-workflows/.github/workflows/sonar.yml@REVIEWED_COMMIT_SHA
   with:
     project-key: YOUR_VERIFIED_KEY
